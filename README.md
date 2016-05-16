@@ -1,0 +1,2 @@
+# smartcat-guidelines
+Smartcat guidelines
