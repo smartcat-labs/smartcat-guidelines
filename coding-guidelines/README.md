@@ -7,9 +7,9 @@ Inside this folder you can find formatter we use and checkstyle which should be 
 Try to explain thing you test as good as you can in test name. Do not start with 'test' since it does not hold any value. Start with 'should' since it makes you really think what are you testing and you will end up with clear sentence explaining test case. Use underscores instead of camel case in test names.
 
 ## Checkstyle checks
-In this folder there is [checkstyle.xml](https://github.com/smartcat-labs/smartcat-guidelines/blob/master/coding-guidelines/checkstyle.xml) which provides ruleset we follow. It uses `SupressionFilter` module which references [checkstyle-suppressions.xml](https://github.com/smartcat-labs/smartcat-guidelines/blob/master/coding-guidelines/checkstyle-suppressions.xml) which has exceptions for certain directories. Reference uses `config_loc` variable, it can be used by IDE to point to absolute path of suppression file. IDE plugins for checkstyle use absolute path here, that is reason why `config_loc` is necessary to define per project absolute path prefix.
+In this folder there is [checkstyle.xml](https://github.com/smartcat-labs/smartcat-guidelines/blob/master/coding-guidelines/checkstyle.xml) which provides ruleset we follow. It uses `SupressionFilter` module which references [checkstyle-suppressions.xml](https://github.com/smartcat-labs/smartcat-guidelines/blob/master/coding-guidelines/checkstyle-suppressions.xml) which has exceptions for certain directories. Glue is [checkstyle.properties](https://github.com/smartcat-labs/smartcat-guidelines/blob/master/coding-guidelines/checkstyle.properties) where you define `suppression_file` location. This is done this way since checkstyle maven plugin can resolve relative paths, and we provide default path to suppression file which is at same level as checkstyle.xml and using this variable you can override it in your favorite IDE (i.e. in eclipse in checkstyle properties you can add additional property `suppression_file` which will point to absolute path on your computer).
 
-Maven plugin for checkstyle does not have `config_loc` variable, so you must define it. Here is part of maven `pom.xml` which configures checkstyle plugin (assumption is that both `checkstyle.xml` and checkstyle-suppressions.xml` are in root of project):
+Maven plugin for checkstyle resolves path as relative, here is part of maven `pom.xml` which configures checkstyle plugin (assumption is that `checkstyle.xml`, `checkstyle-suppressions.xml` and `checkstyle.properties` are in root of project):
 
 ```
 <!-- Check style on build. -->
@@ -25,13 +25,12 @@ Maven plugin for checkstyle does not have `config_loc` variable, so you must def
 			</goals>
 			<configuration>
 				<configLocation>checkstyle.xml</configLocation>
-				<suppressionsFileExpression>checkstyle.suppression.file</suppressionsFileExpression>
 				<!-- Apply rules for test sources as well -->
 				<includeTestSourceDirectory>true</includeTestSourceDirectory>
 				<consoleOutput>true</consoleOutput>
 				<failsOnError>true</failsOnError>
-				<!-- Define config_loc variable to point to place where suppression file is located-->
-				<propertyExpansion>config_loc=./</propertyExpansion>
+				<!-- Define path to checkstyle properties -->
+				<propertiesLocation>checkstyle.properties</propertiesLocation>
 				<excludes>**/generated/**/*</excludes>
 			</configuration>
 		</execution>
@@ -40,4 +39,3 @@ Maven plugin for checkstyle does not have `config_loc` variable, so you must def
 ```
 ##Code formatter
 Inside this directory you can find [smartcat-formatter.xml](https://github.com/smartcat-labs/smartcat-guidelines/blob/master/coding-guidelines/smartcat-formatter.xml) we use on our projects.
-
