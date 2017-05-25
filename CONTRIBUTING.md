@@ -3,21 +3,24 @@
 ---
 
 ### Checklist before creating a Pull Request
-Submit only relevant commits. We don't mind many commits in a pull request, but they must be relevant as explained below.
-When creating a pull request, commit only relevant changes and squash commits into one before merging. Track issues that this PR fixes or implements.
+Submit only one commit per pull request.
+When creating a pull request, commit only relevant changes and squash commits into one before pushing branch on origin. Track issues that this PR fixes or implements.
+If there are more commits in pull request that can represent separate logic units, create multiple pull requests, one pull request for each commit.
 
 - __Use a feature branch__ The pull request should be created from a feature branch, and not from _dev_. See below for why.
 - __No merge-commits__
 If you have commits that looks like this _"Merge branch 'my-branch' into dev"_ or _"Merge branch 'dev' of github .com/smartcat-labs/repository_name into dev"_ you're probaly using merge instead of [rebase](https://help.github.com/articles/about-git-rebase) locally. See below on _Handling updates from upstream_.
 - __Squash commits__ Often we create temporary commits like _"Started implementing feature x"_ and then _"Did a bit more on feature x"_. Squash these commits together using [interactive rebase](https://help.github.com/articles/about-git-rebase). Also see [Squashing commits with rebase](http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html).
 - __Descriptive commit messages__ If a commit's message isn't descriptive, change it using [interactive rebase](https://help.github.com/articles/about-git-rebase). Refer to issues using `#issue`. Example of a bad message ~~"Small cleanup"~~. Example of good message: _"Removed Security.Claims header from FSM, which broke Mono build per #62"_. Don't be afraid to write long messages, if needed. Try to explain _why_ you've done the changes. The Erlang repo has some info on [writing good commit messages](https://github.com/erlang/otp/wiki/Writing-good-commit-messages).
-- __No one-commit-to-rule-them-all__ Large commits that changes too many things at the same time are very hard to review. Split large commits into smaller. See this [StackOverflow question](http://stackoverflow.com/questions/6217156/break-a-previous-commit-into-multiple-commits) for information on how to do this.
+- __No one-commit-to-rule-them-all__ Large commits that changes too many things at the same time are very hard to review. Split large commits into smaller and then create separate pull request for each commit. See this [StackOverflow question](http://stackoverflow.com/questions/6217156/break-a-previous-commit-into-multiple-commits) for information on how to do this.
 - __Tests__ Add relevant tests and make sure all existing ones still passes. Tests can be run using the command
 - __No Warnings__ Make sure your code do not produce any build warnings.
 
 After reviewing a Pull request, we might ask you to fix some commits. After you've done that you need to force push to update your branch in your local fork.
 
-####Title and Description for the Pull Request####
+When pull request is accepted, it will be merged using __Rebase and merge__ option in order to avoid merge commits.
+
+#### Title and Description for the Pull Request
 Give the PR a descriptive title and in the description field describe what you have done in general terms and why. This will help the reviewers greatly, and provide a history for the future.
 
 Especially if you modify something existing, be very clear! Have you changed any algorithms, or did you just intend to reorder the code? Justify why the changes are needed.
@@ -103,7 +106,14 @@ This ensures that your history is "clean" i.e. you have one branch off from _dev
 If you're working on a long running feature then you may want to do this quite often, rather than run the risk of potential merge issues further down the line.
 
 ### Making changes to a Pull request
-If you realize you've missed something after submitting a Pull request, just commit to your local branch and push the branch just like you did the first time. This commit will automatically be included in the Pull request.
+If you realize you've missed something after submitting a Pull request. Just make changes, amend commit and force push changes again. Those changes will automatically be included in the Pull request.
+
+```
+git add my-changed-file
+git commit --amend
+git push -f origin my-new-branch-123
+```
+
 If we ask you to change already published commits using interactive rebase (like squashing or splitting commits or  rewriting commit messages) you need to force push using `-f`:
 ```
 git push -f origin my-new-branch-123
